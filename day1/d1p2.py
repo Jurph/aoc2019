@@ -1,6 +1,7 @@
 #!/usr/bin/python
-# Advent of Code Day 1, Problem 1
-# Solves (https://adventofcode.com/2019/day/1) given input.txt on the same path.
+# Advent of Code Day 1, Problem 2
+# Solves (https://adventofcode.com/2019/day/1#part2) given input.txt on the same path.
+# Adds the Rocket Equation wrinkle: fuel requires fuel!
 
 # Ingest input.txt line by line, treating the entries as integers ("mass")
 # Perform a straightforward piece of arithmetic on them ("fuel requirements")
@@ -18,6 +19,9 @@ def calculatefuel(part_mass_in_kilos):
     """
     :param: part_mass_in_kilos is an integer 
     :return: fuel_mass_in_kilos is also an integer 
+    """
+
+    """
     # These are the unit tests as specified 
 
     >>> calculatefuel(12)
@@ -27,15 +31,19 @@ def calculatefuel(part_mass_in_kilos):
     2
 
     >>> calculatefuel(1969)
-    654
+    966
 
     >>> calculatefuel(100756)
-    33583
-
+    50346
     """
-
-    fuel_mass_in_kilos = math.floor(part_mass_in_kilos/3) - 2
-    return int(fuel_mass_in_kilos)
+    fuel_total_in_kilos = 0
+    fuel_mass_in_kilos = int(math.floor(part_mass_in_kilos/3) - 2)
+    fuel_total_in_kilos += fuel_mass_in_kilos    
+    if (fuel_mass_in_kilos > 0):
+        fuel_total_in_kilos += calculatefuel(fuel_mass_in_kilos)
+    else:
+        return 0
+    return int(fuel_total_in_kilos)
 
 # Handles file I/O and delegates the math 
 def main():
