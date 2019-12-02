@@ -2,9 +2,10 @@
 # Advent of Code Day 2, Problem 1
 # Solves (https://adventofcode.com/2019/day/2) given input.txt on the same path.
 
-# Ingest input.txt line by line, treating the entries as integers ("mass")
-# Perform a straightforward piece of arithmetic on them ("fuel requirements")
-# Sum the results and return the output
+# Ingest input.txt treating the comma-separated items like stack registers 
+# OPCODE 1 = (ADD, pointer_to_val1, pointer_to_val2, addr_to_store_result)
+# OPCODE 2 = (MULT, pointer_to_val1, pointer_to_val2, addr_to_store_result)
+# OPCODE 99 = HALT, takes no parameters 
 
 import math
 import os
@@ -18,38 +19,52 @@ def main():
         while inputfile:
             inputline = inputfile.readline()
             if inputline:
-                turing_tape = inputline.split(",")
-                # DO STUFF 
+                turing_tape = list(map(int, inputline.split(",")))
+                output = oper(turing_tape, int(0)) 
             else:
                 break
-    
+    print(output)
     return
 
-def oper(stack, stack_pointer):
+def oper(stack, pointer):
     """
-    :param list: a list including at least 4 items
-    :param stack_pointer: an int pointing to an element of the list 
+    :param list: a list including at least one OPCODE and parameters 
+    :param pointer: an int pointing to an element of the list 
 
-    >>> code = [1, 0, 0, 0, 99]; (outcode, pointer) = oper(code, 0); outcode
+    >>> oper([1, 0, 0, 0, 99], 0)
+    Reached HALT instruction at 4
     [2, 0, 0, 0, 99]
 
+    >>> oper([2, 3, 0, 3, 99], 0)
+    Reached HALT instruction at 4
+    [2, 3, 0, 6, 99]
+
+    >>> oper([2,4,4,5,99,0], 0)
+    Reached HALT instruction at 4
+    [2, 4, 4, 5, 99, 9801]
+
+    >>> oper([1,1,1,4,99,5,6,0,99], 0)
+    Reached HALT instruction at 8
+    [30, 1, 1, 4, 2, 5, 6, 0, 99]
+
     """
-    while stack:
-        opcode = stack_pointer
-        eax = stack_pointer+1 # TODO: Fix buffer underrun error!
-        ebx = stack_pointer+2
-        addr = stack_pointer+3    
+    while (pointer < len(stack)):
+        opcode = stack[pointer]
+        if (opcode == 99):
+            print("Reached HALT instruction at {}".format(pointer))
+            break
+        eax = stack[(stack[pointer+1])]
+        ebx = stack[(stack[pointer+2])]
+        addr = stack[pointer+3]
         if (opcode == 1):   # ADD EAX, EBX @ ADDR
             stack[addr] = eax + ebx
+            pointer += 4
         elif (opcode == 2): # MULT EAX, EBX @ ADDR
             stack[addr] = eax * ebx
-        elif (opcode == 99): # HALT
-            print("Reached HALT instruction at {}".format(addr))
-            break
+            pointer += 4
         else:
             print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
             break
-        stack_pointer += 4
     return(stack)
 
 if __name__ == "__main__":
