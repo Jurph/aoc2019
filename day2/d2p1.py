@@ -32,26 +32,23 @@ def oper(stack, pointer):
     :param pointer: an int pointing to an element of the list 
 
     >>> oper([1, 0, 0, 0, 99], 0)
-    Reached HALT instruction at 4
     [2, 0, 0, 0, 99]
 
     >>> oper([2, 3, 0, 3, 99], 0)
-    Reached HALT instruction at 4
     [2, 3, 0, 6, 99]
 
     >>> oper([2,4,4,5,99,0], 0)
-    Reached HALT instruction at 4
     [2, 4, 4, 5, 99, 9801]
 
     >>> oper([1,1,1,4,99,5,6,0,99], 0)
-    Reached HALT instruction at 8
     [30, 1, 1, 4, 2, 5, 6, 0, 99]
 
     """
     while (pointer < len(stack)):
         opcode = stack[pointer]
         if (opcode == 99):
-            print("Reached HALT instruction at {}".format(pointer))
+            # print("h")
+            # print("Reached HALT instruction at {}".format(pointer))
             break
         eax = stack[(stack[pointer+1])]
         ebx = stack[(stack[pointer+2])]
@@ -63,7 +60,8 @@ def oper(stack, pointer):
             stack[addr] = eax * ebx
             pointer += 4
         else:
-            print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
+            # print("e")
+            # print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
             break
     return(stack)
 
