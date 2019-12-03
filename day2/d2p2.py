@@ -73,12 +73,9 @@ def main():
     # Initialize constants:
     turing_tape = filehandler()             # Build Turing Tape from the input file
     original_values = list(turing_tape)     # Keep a clean copy of this list using list()
-    loopsize = 99                           # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
     goal_value = 19690720                   # Per problem definition 
-    noun = 0                                # Set up loop
-    while(noun <= loopsize):
-        verb = 0
-        while(verb <= loopsize):
+    for noun in range(0, 100):              # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
+        for verb in range(0, 100):
             turing_tape = list(original_values)
             turing_tape[1] = noun
             turing_tape[2] = verb
@@ -90,8 +87,6 @@ def main():
                 break
             else:
                 print(turing_tape[0], turing_tape[1], turing_tape[2], turing_tape[3]) 
-            verb += 1
-        noun += 1
     return(output)
 
 if __name__ == "__main__":
