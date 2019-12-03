@@ -25,7 +25,7 @@ def main():
     print(output)
     return
 
-def oper(stack, pointer):
+def oper(stack: int, pointer: int):
     """
     :param list: a list including at least one OPCODE and parameters 
     :param pointer: an int pointing to an element of the list 

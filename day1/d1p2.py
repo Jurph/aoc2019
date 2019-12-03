@@ -15,7 +15,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 file_location = os.path.join(THIS_FOLDER, 'input.txt')
 
 # Business logic for fuel calculations 
-def calculatefuel(part_mass_in_kilos):
+def calculatefuel(part_mass_in_kilos: int):
     """
     :param: part_mass_in_kilos is an integer 
     :return: fuel_mass_in_kilos is also an integer 
