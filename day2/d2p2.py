@@ -79,12 +79,12 @@ def main():
     while(noun <= loopsize):
         verb = 0
         while(verb <= loopsize):
-            # turing_tape = filehandler() # Doing this from File I/O every time sucks. Why didn't a global variable work?
             turing_tape = list(original_values)
             turing_tape[1] = noun
             turing_tape[2] = verb
             output = oper(turing_tape, 0)
             if(turing_tape[0] == goal_value):
+                # Reporting an answer of the form [(noun * 100) + verb]
                 print("A = {}, B = {}, REPORT ANSWER {}".format(noun, verb, (noun*100) + verb))
                 return(output)
                 break
