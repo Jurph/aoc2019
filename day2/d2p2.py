@@ -45,15 +45,27 @@ def oper(stack, pointer):
     Reached HALT instruction at 8
     [30, 1, 1, 4, 2, 5, 6, 0, 99]
 
+    >>> oper([69, 420, 90210, 0, 99], 0)
+    ERROR: tried to read out of bounds
+    [69, 420, 90210, 0, 99]
+
+    >>> oper([69, 1, 1, 0, 99], 0)
+    ERROR: unrecognized opcode 69 at 0
+    [69, 1, 1, 0, 99]
+
     """
     while (pointer < len(stack)):
         opcode = stack[pointer]
         if (opcode == 99):
             print("Reached HALT instruction at {}".format(pointer))
             break
-        eax = stack[(stack[pointer+1])]
-        ebx = stack[(stack[pointer+2])]
-        addr = stack[pointer+3]
+        try:
+            eax = stack[(stack[pointer+1])]
+            ebx = stack[(stack[pointer+2])]
+            addr = stack[pointer+3]
+        except IndexError:
+            print("ERROR: tried to read out of bounds")
+            break
         if (opcode == 1):   # ADD EAX, EBX @ ADDR
             stack[addr] = eax + ebx
             pointer += 4
@@ -67,25 +79,21 @@ def oper(stack, pointer):
 
 def main():
     # Initialize constants:
-    turing_tape = filehandler()     # Build Turing Tape from the input file 
-    loopsize = 99                   # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
-    goal_value = 19690720           # Per problem definition 
-    noun = 0                        # Set up loop
-    while(noun <= loopsize):
-        verb = 0
-        while(verb <= loopsize):
-            turing_tape = filehandler() # Doing this from File I/O every time sucks. Why didn't a global variable work?
+    turing_tape = filehandler()             # Build Turing Tape from the input file
+    original_values = list(turing_tape)     # Keep a clean copy of this list using list()
+    goal_value = 19690720                   # Per problem definition 
+    for noun in range(0, 100):              # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
+        for verb in range(0, 100):
+            turing_tape = list(original_values)
             turing_tape[1] = noun
             turing_tape[2] = verb
             output = oper(turing_tape, 0)
-            if(turing_tape[0] == 19690720):
+            if(turing_tape[0] == goal_value):
+                # Reporting an answer of the form [(noun * 100) + verb]
                 print("A = {}, B = {}, REPORT ANSWER {}".format(noun, verb, (noun*100) + verb))
                 return(output)
-                break
             else:
                 print(turing_tape[0], turing_tape[1], turing_tape[2], turing_tape[3]) 
-            verb += 1
-        noun += 1
     return(output)
 
 if __name__ == "__main__":

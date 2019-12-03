@@ -7,7 +7,6 @@
 # OPCODE 2 = (MULT, pointer_to_val1, pointer_to_val2, addr_to_store_result)
 # OPCODE 99 = HALT, takes no parameters 
 
-import math
 import os
 
 # Sets a cross-platform relative folder so this script can run wherever
@@ -26,33 +25,48 @@ def main():
     print(output)
     return
 
-def oper(stack, pointer):
+def oper(stack: int, pointer: int):
     """
     :param list: a list including at least one OPCODE and parameters 
     :param pointer: an int pointing to an element of the list 
 
     >>> oper([1, 0, 0, 0, 99], 0)
+    Reached HALT instruction at 4
     [2, 0, 0, 0, 99]
 
     >>> oper([2, 3, 0, 3, 99], 0)
+    Reached HALT instruction at 4
     [2, 3, 0, 6, 99]
 
     >>> oper([2,4,4,5,99,0], 0)
+    Reached HALT instruction at 4
     [2, 4, 4, 5, 99, 9801]
 
     >>> oper([1,1,1,4,99,5,6,0,99], 0)
+    Reached HALT instruction at 8
     [30, 1, 1, 4, 2, 5, 6, 0, 99]
+
+    >>> oper([69, 420, 90210, 0, 99], 0)
+    ERROR: tried to read out of bounds
+    [69, 420, 90210, 0, 99]
+
+    >>> oper([69, 1, 1, 0, 99], 0)
+    ERROR: unrecognized opcode 69 at 0
+    [69, 1, 1, 0, 99]
 
     """
     while (pointer < len(stack)):
         opcode = stack[pointer]
         if (opcode == 99):
-            # print("h")
-            # print("Reached HALT instruction at {}".format(pointer))
+            print("Reached HALT instruction at {}".format(pointer))
             break
-        eax = stack[(stack[pointer+1])]
-        ebx = stack[(stack[pointer+2])]
-        addr = stack[pointer+3]
+        try:
+            eax = stack[(stack[pointer+1])]
+            ebx = stack[(stack[pointer+2])]
+            addr = stack[pointer+3]
+        except IndexError:
+            print("ERROR: tried to read out of bounds")
+            break
         if (opcode == 1):   # ADD EAX, EBX @ ADDR
             stack[addr] = eax + ebx
             pointer += 4
@@ -60,8 +74,7 @@ def oper(stack, pointer):
             stack[addr] = eax * ebx
             pointer += 4
         else:
-            # print("e")
-            # print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
+            print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
             break
     return(stack)
 
