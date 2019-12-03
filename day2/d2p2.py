@@ -8,7 +8,6 @@
 # OPCODE 99 = HALT, takes no parameters 
 # Find the arguments at input[1] and input[2] that set input[0] to 19690720
 
-import math
 import os
 
 # Sets a cross-platform relative folder so this script can run wherever
@@ -24,34 +23,6 @@ def filehandler():
             else:
                 break
     return assembly
-
-def main():
-    turing_tape = filehandler()
-    a = 0
-    # loopsize = len(turing_tape)
-    loopsize = 100
-    while(a < loopsize):
-        b = 0
-        while(b < loopsize):
-            turing_tape = filehandler()
-            turing_tape[1] = a # Set param 1 
-            turing_tape[2] = b # Set param 2
-            print("Trying {}, {}".format(a, b))
-            try: 
-                output = oper(turing_tape, 0)  # TODO: handle index out of range errors
-            except IndexError:
-                output = 0
-            else:
-                output = 0
-            if(turing_tape[0] == 19690720):
-                print("A = {}, B = {}, REPORT ANSWER {}".format(a, b, (a*100) + b))
-                return(output)
-                break
-            else:
-                print(turing_tape[0], turing_tape[1], turing_tape[2], turing_tape[3]) 
-            b += 1
-        a += 1
-    return(output)
 
 def oper(stack, pointer):
     """
@@ -90,9 +61,32 @@ def oper(stack, pointer):
             stack[addr] = eax * ebx
             pointer += 4
         else:
-            # print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
+            print("ERROR: unrecognized opcode {} at {}".format(opcode, addr))
             break
     return(stack)
+
+def main():
+    # Initialize constants:
+    turing_tape = filehandler()     # Build Turing Tape from the input file 
+    loopsize = 99                   # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
+    goal_value = 19690720           # Per problem definition 
+    noun = 0                        # Set up loop
+    while(noun <= loopsize):
+        verb = 0
+        while(verb <= loopsize):
+            turing_tape = filehandler() # Doing this from File I/O every time sucks. Why didn't a global variable work?
+            turing_tape[1] = noun
+            turing_tape[2] = verb
+            output = oper(turing_tape, 0)
+            if(turing_tape[0] == 19690720):
+                print("A = {}, B = {}, REPORT ANSWER {}".format(noun, verb, (noun*100) + verb))
+                return(output)
+                break
+            else:
+                print(turing_tape[0], turing_tape[1], turing_tape[2], turing_tape[3]) 
+            verb += 1
+        noun += 1
+    return(output)
 
 if __name__ == "__main__":
     import doctest
