@@ -45,9 +45,13 @@ def oper(stack, pointer):
     Reached HALT instruction at 8
     [30, 1, 1, 4, 2, 5, 6, 0, 99]
 
-    >>> oper([3, 6, 9, 12, 99], 0)
-    ERROR: unrecognized opcode 3 at 0
-    [3, 6, 9, 12, 99]
+    >>> oper([69, 420, 90210, 0, 99], 0)
+    ERROR: tried to read out of bounds
+    [69, 420, 90210, 0, 99]
+
+    >>> oper([69, 1, 1, 0, 99], 0)
+    ERROR: unrecognized opcode 69 at 0
+    [69, 1, 1, 0, 99]
 
     """
     while (pointer < len(stack)):
@@ -55,9 +59,13 @@ def oper(stack, pointer):
         if (opcode == 99):
             print("Reached HALT instruction at {}".format(pointer))
             break
-        eax = stack[(stack[pointer+1])]
-        ebx = stack[(stack[pointer+2])]
-        addr = stack[pointer+3]
+        try:
+            eax = stack[(stack[pointer+1])]
+            ebx = stack[(stack[pointer+2])]
+            addr = stack[pointer+3]
+        except IndexError:
+            print("ERROR: tried to read out of bounds")
+            break
         if (opcode == 1):   # ADD EAX, EBX @ ADDR
             stack[addr] = eax + ebx
             pointer += 4
