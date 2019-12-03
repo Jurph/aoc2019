@@ -92,7 +92,6 @@ def main():
                 # Reporting an answer of the form [(noun * 100) + verb]
                 print("A = {}, B = {}, REPORT ANSWER {}".format(noun, verb, (noun*100) + verb))
                 return(output)
-                break
             else:
                 print(turing_tape[0], turing_tape[1], turing_tape[2], turing_tape[3]) 
     return(output)
