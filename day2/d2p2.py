@@ -45,6 +45,10 @@ def oper(stack, pointer):
     Reached HALT instruction at 8
     [30, 1, 1, 4, 2, 5, 6, 0, 99]
 
+    >>> oper([3, 6, 9, 12, 99], 0)
+    ERROR: unrecognized opcode 3 at 0
+    [3, 6, 9, 12, 99]
+
     """
     while (pointer < len(stack)):
         opcode = stack[pointer]
@@ -67,18 +71,20 @@ def oper(stack, pointer):
 
 def main():
     # Initialize constants:
-    turing_tape = filehandler()     # Build Turing Tape from the input file 
-    loopsize = 99                   # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
-    goal_value = 19690720           # Per problem definition 
-    noun = 0                        # Set up loop
+    turing_tape = filehandler()             # Build Turing Tape from the input file
+    original_values = list(turing_tape)     # Keep a clean copy of this list using list()
+    loopsize = 99                           # Per problem definition, NOUN & VERB are in range [0 .. 99] inclusive
+    goal_value = 19690720                   # Per problem definition 
+    noun = 0                                # Set up loop
     while(noun <= loopsize):
         verb = 0
         while(verb <= loopsize):
-            turing_tape = filehandler() # Doing this from File I/O every time sucks. Why didn't a global variable work?
+            # turing_tape = filehandler() # Doing this from File I/O every time sucks. Why didn't a global variable work?
+            turing_tape = list(original_values)
             turing_tape[1] = noun
             turing_tape[2] = verb
             output = oper(turing_tape, 0)
-            if(turing_tape[0] == 19690720):
+            if(turing_tape[0] == goal_value):
                 print("A = {}, B = {}, REPORT ANSWER {}".format(noun, verb, (noun*100) + verb))
                 return(output)
                 break
